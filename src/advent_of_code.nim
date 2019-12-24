@@ -1,4 +1,4 @@
-import streams, strutils, math, strformat
+import streams, strutils, math, advent/manhattan, algorithm
 
 proc calculate_fuel*(mass: int): int =
   int(floor(mass / 3)) - 2
@@ -26,6 +26,28 @@ proc day_one_main_part_two*(path_to_input: string): int =
       fuel = process_fuel(parseInt(line))
       result += fuel
   my_file.close()
+
+proc day_three_part_one*(path_to_values: string): int =
+  var my_file = newFileStream(path_to_values)
+  var line = ""
+  var first_values, second_values: seq[string]
+  var distances: seq[int]
+  var i = 0
+  if not isNil(my_file):
+    while my_file.readLine(line):
+      if i == 0:
+        first_values = line.split(",")
+      else:
+        second_values = line.split(",")
+      i += 1
+  my_file.close()
+  var first_values_x_y, second_values_x_y: seq[(int, int)]
+  first_values_x_y = build_x_and_y_values(first_values)
+  second_values_x_y = build_x_and_y_values(second_values)
+  for value in first_values_x_y:
+    if value in second_values_x_y and value != (0, 0):
+      distances.add(calculate_manhattan_distance(value, (0, 0)))
+  sorted(distances)[0]
 
 proc process_opcode_one(input: seq[int], value1, value2, value3: int): seq[int] =
   var list = input
@@ -68,6 +90,4 @@ proc day_two_main_part_two*(input: seq[int]): int =
         result = 100 * noun + verb
 
 when isMainModule:
-  var inputs = @[1,0,0,3,1,1,2,3,1,3,4,3,1,5,0,3,2,1,9,19,1,19,5,23,1,13,23,27,1,27,6,31,2,31,6,35,2,6,35,39,1,39,5,43,1,13,43,47,1,6,47,51,2,13,51,55,1,10,55,59,1,59,5,63,1,10,63,67,1,67,5,71,1,71,10,75,1,9,75,79,2,13,79,83,1,9,83,87,2,87,13,91,1,10,91,95,1,95,9,99,1,13,99,103,2,103,13,107,1,107,10,111,2,10,111,115,1,115,9,119,2,119,6,123,1,5,123,127,1,5,127,131,1,10,131,135,1,135,6,139,1,10,139,143,1,143,6,147,2,147,13,151,1,5,151,155,1,155,5,159,1,159,2,163,1,163,9,0,99,2,14,0,0]
-  #echo day_two_main_part_one(inputs, 12, 2)
-  echo day_two_main_part_two(inputs)
+  echo day_three_part_one("/home/mark/advent_of_code_2019.nim/inputs/daythree.txt")
