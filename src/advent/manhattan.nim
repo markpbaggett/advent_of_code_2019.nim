@@ -1,14 +1,7 @@
-import strutils
-
-proc ensure_positivity(value1, value2: int): int =
-    var answer = value1 - value2
-    if answer < 0:
-      result = answer * -1
-    else:
-      result = answer
+import strutils, system
   
 proc calculate_manhattan_distance*(first, second: (int, int)): int =
-    ensure_positivity(first[0], second[0]) + ensure_positivity(first[1], second[1])
+    abs(first[0] - second[0]) + abs(first[1] - second[1])
 
 proc convert_value*(value: string): (string, int) = 
     var second = 0
