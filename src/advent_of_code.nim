@@ -49,6 +49,28 @@ proc day_three_part_one*(path_to_values: string): int =
       distances.add(calculate_manhattan_distance(value, (0, 0)))
   sorted(distances)[0]
 
+proc day_three_part_two*(path_to_values: string): int =
+  var my_file = newFileStream(path_to_values)
+  var line = ""
+  var first_values, second_values: seq[string]
+  var distances: seq[int]
+  var i = 0
+  if not isNil(my_file):
+    while my_file.readLine(line):
+      if i == 0:
+        first_values = line.split(",")
+      else:
+        second_values = line.split(",")
+      i += 1
+  my_file.close()
+  var first_values_x_y, second_values_x_y: seq[(int, int)]
+  first_values_x_y = build_x_and_y_values(first_values)
+  second_values_x_y = build_x_and_y_values(second_values)
+  for value in first_values_x_y:
+    if value in second_values_x_y and value != (0, 0):
+      distances.add(first_values_x_y.find(value) + second_values_x_y.find(value) + 2)
+  sorted(distances)[0]
+
 proc process_opcode_one(input: seq[int], value1, value2, value3: int): seq[int] =
   var list = input
   list[value3] = list[value1] + list[value2]
@@ -90,4 +112,4 @@ proc day_two_main_part_two*(input: seq[int]): int =
         result = 100 * noun + verb
 
 when isMainModule:
-  echo day_three_part_one("/home/mark/advent_of_code_2019.nim/inputs/daythree.txt")
+  echo day_three_part_two("/home/mark/nim_projects/advent_of_code_2019.nim/inputs/daythree.txt")

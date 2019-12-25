@@ -11,36 +11,43 @@ proc convert_value*(value: string): (string, int) =
             second = parseInt(value.replace(thing))
     ($value[0], second)
 
-proc calculate_pairs*(directions: (string, int), originx, originy: int): seq[(int, int)] =
-    var newx, originx = originx
-    var newy, originy = originy
+proc calculate_pairs*(directions: (string, int), originalx, originaly: int): seq[(int, int)] =
+    var newx, originx = originalx
+    var newy, originy = originaly
     case directions[0]
     of "R":
       newx += directions[1]
       while originx <= newx:
-        result.add((originx, originy))
+        if originx != originalx:
+          result.add((originx, originy))
         originx += 1
     of "U":
       newy += directions[1]
       while originy <= newy:
-        result.add((originx, originy))
+        if originy != originaly:
+          result.add((originx, originy))
         originy+=1
     of "D":
       newy -= directions[1]
       while originy >= newy:
-        result.add((originx, originy))
+        if originy != originaly:
+          result.add((originx, originy))
         originy-=1
     of "L":
       newx -= directions[1]
       while originx >= newx:
-        result.add((originx, originy))
+        if originx != originalx:
+          result.add((originx, originy))
         originx-=1
 
 proc build_x_and_y_values*(directions: seq[string]): seq[(int, int)] = 
     var first_current: seq[(int, int)]
-    first_current.add((0, 0))
     for value in directions:
         let first_move = convert_value(value)
-        first_current = calculate_pairs(first_move, first_current[len(first_current)-1][0], first_current[len(first_current)-1][1])
+        try:
+          first_current = calculate_pairs(first_move, first_current[len(first_current)-1][0], first_current[len(first_current)-1][1])
+        except:
+          first_current = calculate_pairs(first_move, 0, 0)
         for value in first_current:
-          result.add(value)
+            result.add(value)
+        
