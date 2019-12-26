@@ -1,4 +1,4 @@
-import streams, strutils, math, advent/manhattan, algorithm
+import streams, strutils, math, advent/manhattan, advent/password, algorithm, sequtils
 
 proc calculate_fuel*(mass: int): int =
   int(floor(mass / 3)) - 2
@@ -111,5 +111,23 @@ proc day_two_main_part_two*(input: seq[int]): int =
       if output == 19690720:
         result = 100 * noun + verb
 
+proc day_four_part_one*(starting, ending: int): int =
+  ## Returns the number of different passwords that meet the criteria between the starting and ending number.
+  ##
+  ## Two digits are adjacent and the same.
+  ## Going from left to right, the digits never decrease.
+  var starting = starting
+  var meets_criteria = 0
+  while starting <= ending:
+    let test = $starting
+    let pass_as_seq: seq[char] = toSeq(test.items)
+    let never_decreases = check_never_decreases(pass_as_seq)
+    if never_decreases == true:
+      let check_adjacent =check_adjacent_and_the_same(pass_as_seq)
+      if check_adjacent:
+        meets_criteria += 1
+    starting += 1
+  meets_criteria
+
 when isMainModule:
-  echo day_three_part_two("/home/mark/nim_projects/advent_of_code_2019.nim/inputs/daythree.txt")
+  echo day_four_part_one(156218, 652527)
