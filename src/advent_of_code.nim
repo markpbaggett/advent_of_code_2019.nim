@@ -123,11 +123,31 @@ proc day_four_part_one*(starting, ending: int): int =
     let pass_as_seq: seq[char] = toSeq(test.items)
     let never_decreases = check_never_decreases(pass_as_seq)
     if never_decreases == true:
-      let check_adjacent =check_adjacent_and_the_same(pass_as_seq)
+      let check_adjacent = check_adjacent_and_the_same(pass_as_seq)
       if check_adjacent:
         meets_criteria += 1
     starting += 1
   meets_criteria
 
+proc day_four_part_two*(starting, ending: int): int =
+  ## Same as above except the adjacent digits can only be repeated once.
+  ##
+  ## Example:
+  ##
+  ## This is valid:  `111122`
+  ## This is not: `123444`
+  var starting = starting
+  var meets_criteria = 0
+  while starting <= ending:
+    let test = $starting
+    let pass_as_seq: seq[char] = toSeq(test.items)
+    let never_decreases = check_never_decreases(pass_as_seq)
+    if never_decreases == true:
+      let check_adjacent = check_that_adjacent_is_only_a_pair(pass_as_seq)
+      if check_adjacent == true:
+        meets_criteria += 1
+    starting += 1
+  meets_criteria
+
 when isMainModule:
-  echo day_four_part_one(156218, 652527)
+  echo day_four_part_two(156218, 652527)
